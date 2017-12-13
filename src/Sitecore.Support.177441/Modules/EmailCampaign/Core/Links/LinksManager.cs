@@ -1,6 +1,4 @@
-﻿
-
-namespace Sitecore.Support.Modules.EmailCampaign.Core.Links
+﻿namespace Sitecore.Support.Modules.EmailCampaign.Core.Links
 {
     using System;
     using System.Text.RegularExpressions;
