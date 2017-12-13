@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Sitecore.Data.Items;
-using Sitecore.Modules.EmailCampaign;
-using Sitecore.Modules.EmailCampaign.Core;
-using Sitecore.Modules.EmailCampaign.Core.Links;
-using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
-
-namespace Sitecore.Support.Modules.EmailCampaign.Messages
+﻿namespace Sitecore.Support.Modules.EmailCampaign.Messages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+    using Sitecore.Data.Items;
+    using Sitecore.Modules.EmailCampaign;
+    using Sitecore.Modules.EmailCampaign.Core;
+    using Sitecore.Modules.EmailCampaign.Core.Links;
+    using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
+
     public class HtmlMail : Sitecore.Modules.EmailCampaign.Messages.HtmlMail
     {
         protected HtmlMail(Item item) : base(item)
@@ -45,6 +45,13 @@ namespace Sitecore.Support.Modules.EmailCampaign.Messages
             Util.TraceTimeDiff("Encode 'src' links", startTime);
 
             return html;
+        }
+
+        public override object Clone()
+        {
+            var newMessage = new HtmlMail(InnerItem);
+            CloneFields(newMessage);
+            return newMessage;
         }
     }
 }

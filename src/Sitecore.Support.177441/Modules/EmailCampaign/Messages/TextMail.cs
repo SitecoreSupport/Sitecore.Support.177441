@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Sitecore.Data.Items;
-using Sitecore.Modules.EmailCampaign;
-using Sitecore.Modules.EmailCampaign.Core.Links;
-using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
-using Sitecore.Modules.EmailCampaign.Messages;
-
-namespace Sitecore.Support.Modules.EmailCampaign.Messages
+﻿namespace Sitecore.Support.Modules.EmailCampaign.Messages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web;
+    using Sitecore.Data.Items;
+    using Sitecore.Modules.EmailCampaign;
+    using Sitecore.Modules.EmailCampaign.Core.Links;
+    using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
+    using Sitecore.Modules.EmailCampaign.Messages;
+
     public class TextMail:Sitecore.Modules.EmailCampaign.Messages.TextMail
     {
         private readonly TextMailSource _curSource;
@@ -35,6 +35,13 @@ namespace Sitecore.Support.Modules.EmailCampaign.Messages
             });
             Util.TraceTimeDiff("Modify 'href' and 'text' links", startTime);
             return html;
+        }
+
+        public override object Clone()
+        {
+            var newMessage = new TextMail(this.InnerItem);
+            CloneFields(newMessage);
+            return newMessage;
         }
     }
 }

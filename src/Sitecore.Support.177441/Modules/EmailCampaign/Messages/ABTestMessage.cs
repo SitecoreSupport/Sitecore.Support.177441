@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Sitecore.Data.Items;
-using Sitecore.Modules.EmailCampaign;
-using Sitecore.Modules.EmailCampaign.Core;
-using Sitecore.Modules.EmailCampaign.Core.Links;
-using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
-
-namespace Sitecore.Support.Modules.EmailCampaign.Messages
+﻿namespace Sitecore.Support.Modules.EmailCampaign.Messages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Web;
+    using Sitecore.Data.Items;
+    using Sitecore.Modules.EmailCampaign;
+    using Sitecore.Modules.EmailCampaign.Core;
+    using Sitecore.Modules.EmailCampaign.Core.Links;
+    using Sitecore.Modules.EmailCampaign.Core.Pipelines.GenerateLink;
+
     public class ABTestMessage : Sitecore.Modules.EmailCampaign.Messages.ABTestMessage
     {
         protected ABTestMessage(Item item) : base(item)
@@ -45,6 +46,18 @@ namespace Sitecore.Support.Modules.EmailCampaign.Messages
             Util.TraceTimeDiff("Encode 'src' links", startTime);
 
             return html;
+        }
+        public override object Clone()
+        {
+            var newMessage = new ABTestMessage(InnerItem);
+            var isTestConfiguredField = typeof(Sitecore.Modules.EmailCampaign.Messages.ABTestMessage).GetField("_isTestConfigured",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            isTestConfiguredField.SetValue(newMessage, isTestConfiguredField.GetValue(this));
+            var testContextField = typeof(Sitecore.Modules.EmailCampaign.Messages.ABTestMessage).GetField("_testContext",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            testContextField.SetValue(newMessage, testContextField.GetValue(this));
+            CloneFields(newMessage);
+            return newMessage;
         }
     }
 }
