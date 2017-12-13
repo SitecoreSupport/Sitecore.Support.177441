@@ -8,8 +8,13 @@ namespace Sitecore.Support.Modules.EmailCampaign.Core.Links
 
     public class LinksManager
     {
+        #region ChangedCode
+
         private static readonly Lazy<Regex> HrefRegex = new Lazy<Regex>(() =>
-            new Regex(@"(href\s*=\s*)((""[^\s]+"")|('[^\s]+'))", RegexOptions.Compiled | RegexOptions.IgnoreCase));
+            new Regex(@"(href\s*=\s*)([""'])(.*?)\2", RegexOptions.Compiled | RegexOptions.IgnoreCase));
+
+        #endregion
+        
         private static readonly Lazy<Regex> SrcRegex = new Lazy<Regex>(() =>
             new Regex(@"(src\s*=\s*)((""[^\s]+"")|('[^\s]+'))()", RegexOptions.Compiled | RegexOptions.IgnoreCase));
         private static readonly Lazy<Regex> TextRegex = new Lazy<Regex>(() =>
@@ -49,7 +54,7 @@ namespace Sitecore.Support.Modules.EmailCampaign.Core.Links
 
             if ((_linkType & LinkType.Href) == LinkType.Href)
             {
-                Html = HrefRegex.Value.Replace(Html, match => ChangeLink(match, 2, func, 1));
+                Html = HrefRegex.Value.Replace(Html, match => ChangeHrefLink(match, func));
             }
             if ((_linkType & LinkType.Src) == LinkType.Src)
             {
@@ -67,6 +72,19 @@ namespace Sitecore.Support.Modules.EmailCampaign.Core.Links
             return Html;
         }
 
+        #region AddedCode
+
+        private static string ChangeHrefLink(Match match, Func<string, string> func)
+        {
+            var hrefAttribute = match.Groups[1].Value;
+            var quote = match.Groups[2].Value;
+            var linkValue = match.Groups[3].Value;
+            var newLinkValue = func(linkValue);
+            return newLinkValue != null ? $"{hrefAttribute}{quote}{newLinkValue}{quote}" : match.Value;
+        }
+
+        #endregion
+        
         private static string ChangeLink(Match match, int linkGroupNumber, Func<string, string> func,
             int linkBeginGroupNumber = 0, int linkEndGroupNumber = 0)
         {
